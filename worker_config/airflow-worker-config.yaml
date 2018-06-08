@@ -71,6 +71,9 @@ spec:
         - containerPort: 8793
           protocol: TCP
         resources: {}
+        securityContext:
+          privileged: true
+          runAsUser: 0
         terminationMessagePath: /dev/termination-log
         terminationMessagePolicy: File
         volumeMounts:
@@ -78,6 +81,10 @@ spec:
           name: airflow-config
         - mountPath: /home/airflow/gcs
           name: gcsdir
+        - mountPath: /var/run/docker.sock
+          name: docker-host
+        - mountPath: /bin/docker
+          name: docker-app
       - args:
         - /home/airflow/gcs
         env:
@@ -106,4 +113,10 @@ spec:
         name: airflow-config
       - emptyDir: {}
         name: gcsdir
+      - hostPath:
+          path: /var/run/docker.sock
+        name: docker-host
+      - hostPath:
+          path: /usr/bin/docker
+        name: docker-app
 status: {}
